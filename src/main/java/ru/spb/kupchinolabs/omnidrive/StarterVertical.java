@@ -26,6 +26,7 @@ public class StarterVertical extends AbstractVerticle {
         log.info("deploying verticals...");
         vertx.deployVerticle(ClientVertical.class.getName(), completionHandler);
         vertx.deployVerticle(YandexDisc.class.getName(), completionHandler);
+        vertx.deployVerticle(YandexVertical.class.getName(), completionHandler);
         //vertx.deployVerticle(Proxy.class.getName(), completionHandler);
         //vertx.deployVerticle(GoogleDrive.class.getName(), completionHandler);
     }

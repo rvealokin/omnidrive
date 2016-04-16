@@ -7,7 +7,7 @@ import io.vertx.ext.web.RoutingContext;
 
 import java.util.logging.Logger;
 
-import static ru.spb.kupchinolabs.omnidrive.Constants.INBOUD_QUEUE;
+import static ru.spb.kupchinolabs.omnidrive.Constants.QUEUE_REQUEST_URL;
 
 /**
  * Created by inikolaev on 16/04/16.
@@ -28,7 +28,7 @@ public class ClientVertical extends AbstractVerticle {
 
             JsonObject json = new JsonObject(body.toString());
 
-            vertx.eventBus().publish(INBOUD_QUEUE, json);
+            vertx.eventBus().publish(QUEUE_REQUEST_URL, json);
             routingContext.request().response()
                     .putHeader("Content-length", "2")
                     .write("OK")

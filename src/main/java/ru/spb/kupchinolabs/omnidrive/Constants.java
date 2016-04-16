@@ -4,5 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
-    public static final String INBOUD_QUEUE = "inbound.queue";
+    public static final String QUEUE_REQUEST_URL = "queue.request.url";
+    public static final String QUEUE_REQUEST_FILE = "queue.request.file";
 }

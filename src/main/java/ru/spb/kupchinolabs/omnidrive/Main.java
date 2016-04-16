@@ -7,7 +7,7 @@ import io.vertx.core.Vertx;
  */
 public class Main {
     public static void main(String[] args) {
-        String payload = "{\"from\": \"test1\", \"to\": \"test2\"}";
+        String payload = "{\"from\": \"%D0%93%D0%BE%D1%80%D1%8B.jpg\", \"to\": \"test2\"}";
 
         Vertx.vertx().createHttpClient()
                 .post(9090, "localhost", "/copy")
