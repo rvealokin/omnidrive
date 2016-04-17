@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.verticle>ru.spb.kupchinolabs.omnidrive.StarterVertical</main.verticle>
-        <vertx.version>3.0.0</vertx.version>
+        <vertx.version>3.2.1</vertx.version>
     </properties>
 
     <dependencies>
