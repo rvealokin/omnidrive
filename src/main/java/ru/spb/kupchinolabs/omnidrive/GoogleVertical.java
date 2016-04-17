@@ -20,6 +20,8 @@ import java.util.UUID;
 
 public class GoogleVertical extends AbstractVerticle {
 
+    private static final int BUFFER_SIZE = 1024 * 1024;
+
     @Override
     public void start() throws Exception {
         vertx.eventBus().consumer(Constants.QUEUE_REQUEST_FILE, mes -> {
@@ -127,7 +129,9 @@ public class GoogleVertical extends AbstractVerticle {
         //request.end();
 
         System.out.printf("%s\r\n%s%s%s\r\n%s%s--", multipartBoundary, metadataContentType, metadata, multipartBoundary, fileContentType, multipartBoundary);
-        Pump.pump(yandexResponse, request).start();
+        Pump.pump(yandexResponse, request)
+            .setWriteQueueMaxSize(BUFFER_SIZE)
+            .start();
 
         yandexResponse.endHandler(v -> {
             request.write("\r\n--").write(multipartBoundary).write("--");
