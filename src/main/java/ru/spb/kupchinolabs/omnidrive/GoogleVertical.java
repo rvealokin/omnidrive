@@ -20,7 +20,11 @@ import java.util.UUID;
 
 public class GoogleVertical extends AbstractVerticle {
 
-    private static final int BUFFER_SIZE = 1024 * 1024;
+    private static final int BUFFER_SIZE_127K = 127 * 1024;
+    private static final int BUFFER_SIZE_254K = 254 * 1024;
+    private static final int BUFFER_SIZE_508K = 508 * 1024;
+    private static final int BUFFER_SIZE_1016K = 1016 * 1024;
+    private static final int BUFFER_SIZE_1024K = 1024 * 1024;
 
     @Override
     public void start() throws Exception {
@@ -129,8 +133,11 @@ public class GoogleVertical extends AbstractVerticle {
         //request.end();
 
         System.out.printf("%s\r\n%s%s%s\r\n%s%s--", multipartBoundary, metadataContentType, metadata, multipartBoundary, fileContentType, multipartBoundary);
+
+        System.out.println("#### TEST");
+
         Pump.pump(yandexResponse, request)
-            .setWriteQueueMaxSize(BUFFER_SIZE)
+            .setWriteQueueMaxSize(BUFFER_SIZE_127K)
             .start();
 
         yandexResponse.endHandler(v -> {
