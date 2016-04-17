@@ -7,6 +7,8 @@ import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.StaticHandler;
 
 import java.util.logging.Logger;
 
@@ -22,8 +24,10 @@ public class ClientVertical extends AbstractVerticle {
     @Override
     public void start() throws Exception {
         Router router = Router.router(vertx);
+//        router.route().handler(BodyHandler.create());
         router.post("/copy").handler(this::copyFile);
         router.get("/list").handler(this::listFiles);
+        router.route().handler(StaticHandler.create());
         vertx.createHttpServer().requestHandler(router::accept).listen(9090);
     }
 

@@ -1,14 +1,9 @@
 package ru.spb.kupchinolabs.omnidrive;
 
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 import com.google.common.collect.ImmutableMap;
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
-import io.vertx.core.file.OpenOptions;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
@@ -19,7 +14,6 @@ import io.vertx.core.streams.Pump;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
