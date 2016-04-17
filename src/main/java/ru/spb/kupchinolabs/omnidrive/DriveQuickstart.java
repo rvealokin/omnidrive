@@ -9,13 +9,13 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.media.MediaHttpUploader;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
-import com.google.api.services.drive.Drive;
+
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
+import com.google.api.services.drive.model.*;
+import com.google.api.services.drive.Drive;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,12 +23,8 @@ import java.io.InputStreamReader;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
-public class GoogleDrive {
-
-    private final static Logger log = Logger.getLogger(GoogleDrive.class.getName());
-
+public class DriveQuickstart {
     /** Application name. */
     private static final String APPLICATION_NAME =
             "Drive API Java Quickstart";
@@ -88,18 +84,6 @@ public class GoogleDrive {
                 flow, new LocalServerReceiver.Builder().setHost("localhost").setPort(18080).build()).authorize("user");
         System.out.println(
                 "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
-
-
-        Drive drive = new Drive.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, credential)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-
-        FileList result = drive.files().list()
-                .setPageSize(1)
-                .setFields("nextPageToken, files(id, name)")
-                .execute();
-
         return credential;
     }
 
@@ -111,21 +95,27 @@ public class GoogleDrive {
     public static Drive getDriveService() throws IOException {
         Credential credential = authorize();
 
+        System.out.println("Credentials: " + credential.getAccessToken());
+
         return new Drive.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }
 
-    public static void uploadFile() throws IOException {
-        Drive drive = getDriveService();
+    public static void main(String[] args) throws IOException {
+        // Build a new authorized API client service.
+        Drive service = getDriveService();
 
+        //System.out.println(service.files().create(new File().setFileExtension(".igor").setName("Hello")).setFields("").execute());
+
+/*
         File fileMetadata = new File();
         fileMetadata.setName("HelloWorldFromIgor");
 
         FileContent mediaContent = new FileContent("image/jpeg", new java.io.File("/Users/inikolaev/Downloads/test.jpg"));
 
-        Drive.Files.Create insert = drive.files().create(fileMetadata, mediaContent);
+        Drive.Files.Create insert = service.files().create(fileMetadata, mediaContent);
         MediaHttpUploader uploader = insert.getMediaHttpUploader();
         uploader.setDirectUploadEnabled(false);
         uploader.setProgressListener(v -> {
@@ -147,6 +137,22 @@ public class GoogleDrive {
         });
 
         insert.execute();
+        */
 
+        // Print the names and IDs for up to 10 files.
+        FileList result = service.files().list()
+                .setPageSize(1)
+                .setFields("nextPageToken, files(id, name)")
+                .execute();
+        List<File> files = result.getFiles();
+        if (files == null || files.size() == 0) {
+            System.out.println("No files found.");
+        } else {
+            System.out.println("Files:");
+            for (File file : files) {
+                System.out.printf("%s (%s)\n", file.getName(), file.getId());
+            }
+        }
     }
+
 }
