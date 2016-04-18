@@ -116,7 +116,13 @@ public class DownloaderVertical extends AbstractVerticle {
 
         switch (destinationType) {
             case "file": return (metadata, handler) -> {
-                vertx.fileSystem().open(destinationName.substring(destinationName.indexOf("://") + 3).trim(), new OpenOptions().setRead(false).setTruncateExisting(true), result -> {
+                String path = destinationName.substring(destinationName.indexOf("://") + 3).trim();
+
+                if (Paths.get(path).toFile().isDirectory()) {
+                    path = path + File.separator + metadata.getName();
+                }
+
+                vertx.fileSystem().open(path, new OpenOptions().setRead(false).setTruncateExisting(true), result -> {
                     if (result.succeeded()) {
                         handler.handle(result.result());
                     }

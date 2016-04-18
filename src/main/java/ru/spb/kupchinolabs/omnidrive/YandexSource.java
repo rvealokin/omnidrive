@@ -40,7 +40,7 @@ public class YandexSource implements Source {
                 metadataResponse.bodyHandler(metadataBody -> {
                     final JsonObject metadata = new JsonObject(metadataBody.toString());
 
-                    requestFileDownloadLink(new FileMetadata(metadata.getString("name"), metadata.getString("type"), metadata.getLong("size")), handler);
+                    requestFileDownloadLink(new FileMetadata(metadata.getString("name"), metadata.getString("mime_type"), metadata.getLong("size")), handler);
                 });
             }
         });

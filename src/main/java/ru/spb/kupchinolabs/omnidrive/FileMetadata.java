@@ -37,4 +37,13 @@ public class FileMetadata {
     public long getSize() {
         return size;
     }
+
+    @Override
+    public String toString() {
+        return "FileMetadata{" +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", size=" + size +
+                '}';
+    }
 }
