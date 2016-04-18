@@ -5,16 +5,10 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.OpenOptions;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientOptions;
-import io.vertx.core.http.HttpClientRequest;
-import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.streams.Pump;
 import io.vertx.core.streams.ReadStream;
 import io.vertx.core.streams.WriteStream;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
 
 import java.util.Objects;
 
@@ -26,85 +20,36 @@ import java.util.Objects;
 public class DownloaderVertical extends AbstractVerticle {
     public static final int BUFFER_SIZE_1024K = 2 << 21;
 
-    private static class LoggingWriteStreamAdapter implements WriteStream<Buffer> {
-        private final WriteStream<Buffer> stream;
+    private static class LoggingWriteStreamAdapter extends WriteStreamWrapper<Buffer> {
         private int written = 0;
 
-        public LoggingWriteStreamAdapter(WriteStream<Buffer> stream) {
-            this.stream = stream;
-        }
-
-        @Override
-        public WriteStream<Buffer> exceptionHandler(Handler<Throwable> handler) {
-            return stream.exceptionHandler(handler);
+        public LoggingWriteStreamAdapter(WriteStream<Buffer> delegate) {
+            super(delegate);
         }
 
         @Override
         public WriteStream<Buffer> write(Buffer t) {
             written += t.length();
             System.out.println("Writing " + t.length() + " / " + written + " bytes");
-            return stream.write(t);
-        }
-
-        @Override
-        public void end() {
-            stream.end();
-        }
-
-        @Override
-        public WriteStream<Buffer> setWriteQueueMaxSize(int i) {
-            return stream.setWriteQueueMaxSize(i);
-        }
-
-        @Override
-        public boolean writeQueueFull() {
-            return stream.writeQueueFull();
-        }
-
-        @Override
-        public WriteStream<Buffer> drainHandler(Handler<Void> handler) {
-            return stream.drainHandler(handler);
+            return super.write(t);
         }
     }
 
-    private static class LoggingReadStreamAdapter implements ReadStream<Buffer> {
-        private final ReadStream<Buffer> stream;
+    private static class LoggingReadStreamAdapter extends ReadStreamWrapper<Buffer> {
         private int read = 0;
 
         public LoggingReadStreamAdapter(ReadStream<Buffer> stream) {
-            this.stream = stream;
-        }
-
-        @Override
-        public ReadStream<Buffer> exceptionHandler(Handler<Throwable> handler) {
-            return stream.exceptionHandler(handler);
+            super(stream);
         }
 
         @Override
         public ReadStream<Buffer> handler(Handler<Buffer> handler) {
-            return stream.handler(buffer -> {
+            return super.handler(buffer -> {
                 read += buffer.length();
                 System.out.println("Read " + buffer.length() + " / " + read + " bytes");
                 handler.handle(buffer);
             });
         }
-
-        @Override
-        public ReadStream<Buffer> pause() {
-            return stream.pause();
-        }
-
-        @Override
-        public ReadStream<Buffer> resume() {
-            return stream.resume();
-        }
-
-        @Override
-        public ReadStream<Buffer> endHandler(Handler<Void> endHandler) {
-            return stream.endHandler(endHandler);
-        }
-
-
     }
 
     @Override

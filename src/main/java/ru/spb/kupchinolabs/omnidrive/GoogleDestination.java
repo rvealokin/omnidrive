@@ -7,9 +7,7 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
-import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.streams.Pump;
 import io.vertx.core.streams.WriteStream;
 
 import java.io.IOException;
@@ -20,8 +18,6 @@ import java.util.UUID;
  * Created by inikolaev on 18/04/16.
  */
 public class GoogleDestination implements Destination {
-
-    private static final int BUFFER_SIZE_1024K = 1024 * 1024;
 
     private final Vertx vertx;
     private final String path;
@@ -91,7 +87,7 @@ public class GoogleDestination implements Destination {
             request.write("--").write(multipartBoundary).write("\r\n");
             request.write(fileContentType);
 
-            handler.handle(new WriteStreamWrapper(request) {
+            handler.handle(new WriteStreamWrapper<Buffer>(request) {
                 @Override
                 public void end() {
                     System.out.println("Closing request...");
@@ -102,39 +98,6 @@ public class GoogleDestination implements Destination {
             });
         } catch (IOException e) {
             throw new UncheckedIOException(e);
-        }
-    }
-
-    private static abstract class WriteStreamWrapper implements WriteStream<Buffer> {
-        private final WriteStream<Buffer> stream;
-
-        public WriteStreamWrapper(WriteStream<Buffer> stream) {
-            this.stream = stream;
-        }
-
-        @Override
-        public WriteStream<Buffer> exceptionHandler(Handler<Throwable> handler) {
-            return stream.exceptionHandler(handler);
-        }
-
-        @Override
-        public WriteStream<Buffer> write(Buffer t) {
-            return stream.write(t);
-        }
-
-        @Override
-        public WriteStream<Buffer> setWriteQueueMaxSize(int i) {
-            return stream.setWriteQueueMaxSize(i);
-        }
-
-        @Override
-        public boolean writeQueueFull() {
-            return stream.writeQueueFull();
-        }
-
-        @Override
-        public WriteStream<Buffer> drainHandler(Handler<Void> handler) {
-            return stream.drainHandler(handler);
         }
     }
 }
