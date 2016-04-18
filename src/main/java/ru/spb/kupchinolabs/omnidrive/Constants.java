@@ -6,4 +6,5 @@ public class Constants {
     public static final String QUEUE_DOWNLOAD = "queue.download";
 
     public static final String YANDEX_OAUTH_KEY = "c602f505135842bbbdcc2cbfa91ac776";
+    public static final String DROPBOX_KEY = "_IsgnwnqZRIAAAAAAAGOjhnsDwljZ2k1MAQycqBJAbqnWhzIxrE42gqsksKKygv7";
 }

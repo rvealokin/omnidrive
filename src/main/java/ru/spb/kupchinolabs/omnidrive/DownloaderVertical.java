@@ -73,6 +73,7 @@ public class DownloaderVertical extends AbstractVerticle {
                     Pump.pump(new LoggingReadStreamAdapter(read), new LoggingWriteStreamAdapter(write), BUFFER_SIZE_1024K).start();
 
                     read.endHandler(v -> {
+                        System.out.println("Transmission about to be completed");
                         write.end();
                         System.out.println("Transmission completed");
                     });
@@ -131,6 +132,7 @@ public class DownloaderVertical extends AbstractVerticle {
 
             case "yandex": return new YandexDestination(vertx, destinationName.substring(destinationName.indexOf("://") + 3).trim());
             case "google": return new GoogleDestination(vertx, destinationName.substring(destinationName.indexOf("://") + 3).trim());
+            case "dropbox": return new DropboxDestination(vertx, destinationName.substring(destinationName.indexOf("://") + 3).trim());
 
             default:
                 throw new IllegalArgumentException("Unknown destination type: " + destinationType);
