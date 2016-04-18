@@ -2,20 +2,16 @@ package ru.spb.kupchinolabs.omnidrive;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
-import io.vertx.core.file.OpenOptions;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 
 import java.util.logging.Logger;
 
-import static ru.spb.kupchinolabs.omnidrive.Constants.QUEUE_DOWNLOAD;
-import static ru.spb.kupchinolabs.omnidrive.Constants.QUEUE_REQUEST_URL;
-import static ru.spb.kupchinolabs.omnidrive.Constants.YANDEX_OAUTH_KEY;
+import static ru.spb.kupchinolabs.omnidrive.Constants.*;
 
 /**
  * Created by inikolaev on 16/04/16.
@@ -26,7 +22,6 @@ public class ClientVertical extends AbstractVerticle {
     @Override
     public void start() throws Exception {
         Router router = Router.router(vertx);
-//        router.route().handler(BodyHandler.create());
         router.post("/copy").handler(this::copyFile);
         router.post("/newcopy").handler(this::copyFileNew);
         router.get("/list").handler(this::listFiles);

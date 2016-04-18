@@ -9,12 +9,10 @@ import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.streams.ReadStream;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.UUID;
 
 import static ru.spb.kupchinolabs.omnidrive.Constants.YANDEX_OAUTH_KEY;
 
@@ -61,10 +59,6 @@ public class YandexSource implements Source {
                         System.out.println("Downloading file of size: " + file.headers().get("Content-length"));
                         handler.handle(new SourceStream(metadata, file.pause()));
                     });
-
-                    //final String uuid = UUID.randomUUID().toString();
-                    //vertx.sharedData().getLocalMap("urls").put(uuid, href);
-                    //vertx.eventBus().publish(Constants.QUEUE_REQUEST_FILE, json.copy().put("uuid", uuid));
                 });
             }
         });

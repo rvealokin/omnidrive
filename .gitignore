@@ -1,2 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
+target/
+src/main/resources/client_secret_534548980881.apps.googleusercontent.com.json
