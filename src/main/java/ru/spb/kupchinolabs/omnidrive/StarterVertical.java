@@ -25,11 +25,12 @@ public class StarterVertical extends AbstractVerticle {
         final AsyncResultHandler completionHandler = new AsyncResultHandler();
         log.info("deploying verticals...");
         vertx.deployVerticle(ClientVertical.class.getName(), completionHandler);
-        //vertx.deployVerticle(YandexDisc.class.getName(), completionHandler);
-        vertx.deployVerticle(YandexVertical.class.getName(), completionHandler);
-        vertx.deployVerticle(GoogleVertical.class.getName(), completionHandler);
-        //vertx.deployVerticle(Proxy.class.getName(), completionHandler);
-        //vertx.deployVerticle(GoogleDrive.class.getName(), completionHandler);
+        vertx.deployVerticle(DownloaderVertical.class.getName(), completionHandler);
+        ////vertx.deployVerticle(YandexDisc.class.getName(), completionHandler);
+        //vertx.deployVerticle(YandexVertical.class.getName(), completionHandler);
+        //vertx.deployVerticle(GoogleVertical.class.getName(), completionHandler);
+        ////vertx.deployVerticle(Proxy.class.getName(), completionHandler);
+        ////vertx.deployVerticle(GoogleDrive.class.getName(), completionHandler);
     }
 
     private class AsyncResultHandler implements Handler<AsyncResult<String>> {

@@ -137,7 +137,7 @@ public class GoogleVertical extends AbstractVerticle {
         System.out.println("#### TEST");
 
         Pump.pump(yandexResponse, request)
-            .setWriteQueueMaxSize(BUFFER_SIZE_127K)
+            .setWriteQueueMaxSize(BUFFER_SIZE_1024K)
             .start();
 
         yandexResponse.endHandler(v -> {

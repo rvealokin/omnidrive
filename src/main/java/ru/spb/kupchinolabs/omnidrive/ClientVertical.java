@@ -2,6 +2,7 @@ package ru.spb.kupchinolabs.omnidrive;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Handler;
+import io.vertx.core.file.OpenOptions;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.json.JsonObject;
@@ -12,6 +13,7 @@ import io.vertx.ext.web.handler.StaticHandler;
 
 import java.util.logging.Logger;
 
+import static ru.spb.kupchinolabs.omnidrive.Constants.QUEUE_DOWNLOAD;
 import static ru.spb.kupchinolabs.omnidrive.Constants.QUEUE_REQUEST_URL;
 import static ru.spb.kupchinolabs.omnidrive.Constants.YANDEX_OAUTH_KEY;
 
@@ -26,9 +28,24 @@ public class ClientVertical extends AbstractVerticle {
         Router router = Router.router(vertx);
 //        router.route().handler(BodyHandler.create());
         router.post("/copy").handler(this::copyFile);
+        router.post("/newcopy").handler(this::copyFileNew);
         router.get("/list").handler(this::listFiles);
         router.route().handler(StaticHandler.create());
         vertx.createHttpServer().requestHandler(router::accept).listen(9090);
+    }
+
+    private void copyFileNew(RoutingContext routingContext) {
+        routingContext.request().bodyHandler(body -> {
+            JsonObject json = new JsonObject(body.toString());
+
+            System.out.println("Received request: " + body);
+
+            vertx.eventBus().publish(QUEUE_DOWNLOAD, json);
+            routingContext.request().response()
+                    .putHeader("Content-length", "2")
+                    .write("OK")
+                    .end();
+        });
     }
 
     private void copyFile(RoutingContext routingContext) {
