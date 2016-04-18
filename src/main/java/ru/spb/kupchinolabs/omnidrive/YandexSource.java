@@ -32,24 +32,24 @@ public class YandexSource implements Source {
     }
 
     @Override
-    public void start(Handler<ReadStream<Buffer>> handler) {
+    public void start(Handler<SourceStream<Buffer>> handler) {
         requestFileMetadata(handler);
     }
 
-    private void requestFileMetadata(Handler<ReadStream<Buffer>> handler) {
+    private void requestFileMetadata(Handler<SourceStream<Buffer>> handler) {
         makeYandexRequest("/v1/disk/resources?path=" + path + "&fields=mime_type%2Csize%2Cname", metadataResponse -> {
             if (metadataResponse.statusCode() == 200) {
                 metadataResponse.bodyHandler(metadataBody -> {
                     final JsonObject metadata = new JsonObject(metadataBody.toString());
 
-                    requestFileDownloadLink(metadata, handler);
+                    requestFileDownloadLink(new FileMetadata(metadata.getString("name"), metadata.getString("type"), metadata.getLong("size")), handler);
                 });
             }
         });
     }
 
-    private void requestFileDownloadLink(JsonObject json, Handler<ReadStream<Buffer>> handler) {
-        System.out.println("Requesting download link for file: " + json);
+    private void requestFileDownloadLink(FileMetadata metadata, Handler<SourceStream<Buffer>> handler) {
+        System.out.println("Requesting download link for file: " + metadata);
 
         makeYandexRequest("/v1/disk/resources/download?path=" + path, res -> {
             if (res.statusCode() == 200) {
@@ -59,7 +59,7 @@ public class YandexSource implements Source {
 
                     executeGetRequest(href, ImmutableMap.of("Authorization", "OAuth " + YANDEX_OAUTH_KEY), file -> {
                         System.out.println("Downloading file of size: " + file.headers().get("Content-length"));
-                        handler.handle(file.pause());
+                        handler.handle(new SourceStream(metadata, file.pause()));
                     });
 
                     //final String uuid = UUID.randomUUID().toString();

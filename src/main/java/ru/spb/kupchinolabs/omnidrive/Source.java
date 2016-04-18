@@ -8,5 +8,5 @@ import io.vertx.core.streams.ReadStream;
  * Created by inikolaev on 18/04/16.
  */
 public interface Source {
-    void start(Handler<ReadStream<Buffer>> handler);
+    void start(Handler<SourceStream<Buffer>> handler);
 }

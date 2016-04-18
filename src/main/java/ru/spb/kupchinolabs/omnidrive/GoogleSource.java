@@ -31,20 +31,20 @@ public class GoogleSource implements Source {
     }
 
     @Override
-    public void start(Handler<ReadStream<Buffer>> handler) {
+    public void start(Handler<SourceStream<Buffer>> handler) {
         requestFileMetadata(handler);
     }
 
-    private void requestFileMetadata(Handler<ReadStream<Buffer>> handler) {
+    private void requestFileMetadata(Handler<SourceStream<Buffer>> handler) {
         googleGetRequest("/drive/v3/files/" + path, res -> {
             res.bodyHandler(body -> System.out.println(body.toString()));
-            requestFile(handler);
+            requestFile(new FileMetadata("test"), handler);
         });
     }
 
-    private void requestFile(Handler<ReadStream<Buffer>> handler) {
+    private void requestFile(FileMetadata metadata, Handler<SourceStream<Buffer>> handler) {
         googleGetRequest("/drive/v3/files/" + path + "?alt=media", res -> {
-            handler.handle(res.pause());
+            handler.handle(new SourceStream(metadata, res.pause()));
         });
     }
 

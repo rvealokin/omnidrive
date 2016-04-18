@@ -10,6 +10,8 @@ import io.vertx.core.streams.Pump;
 import io.vertx.core.streams.ReadStream;
 import io.vertx.core.streams.WriteStream;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -63,7 +65,7 @@ public class DownloaderVertical extends AbstractVerticle {
             final Destination destination = createDestination(destinationName);
 
             source.start(read -> {
-                destination.start(write -> {
+                destination.start(read.getMetadata(), write -> {
                     read.resume();
 
                     System.out.println("Beginning transmission");
@@ -88,9 +90,11 @@ public class DownloaderVertical extends AbstractVerticle {
 
         switch (sourceType) {
             case "file": return handler -> {
-                vertx.fileSystem().open(sourceName.substring(sourceName.indexOf("://") + 3).trim(), new OpenOptions().setWrite(false), result -> {
+                final String path = sourceName.substring(sourceName.indexOf("://") + 3).trim();
+                vertx.fileSystem().open(path, new OpenOptions().setWrite(false), result -> {
                     if (result.succeeded()) {
-                        handler.handle(result.result());
+                        final File file = Paths.get(path).toFile();
+                        handler.handle(new SourceStream(new FileMetadata(file.getName(), file.length()), result.result()));
                     }
                 });
             };
@@ -111,7 +115,7 @@ public class DownloaderVertical extends AbstractVerticle {
         final String destinationType = destinationName.substring(0, destinationName.indexOf("://")).trim();
 
         switch (destinationType) {
-            case "file": return handler -> {
+            case "file": return (metadata, handler) -> {
                 vertx.fileSystem().open(destinationName.substring(destinationName.indexOf("://") + 3).trim(), new OpenOptions().setRead(false).setTruncateExisting(true), result -> {
                     if (result.succeeded()) {
                         handler.handle(result.result());

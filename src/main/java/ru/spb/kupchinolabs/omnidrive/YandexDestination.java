@@ -33,7 +33,7 @@ public class YandexDestination implements Destination {
     }
 
     @Override
-    public void start(Handler<WriteStream<Buffer>> handler) {
+    public void start(FileMetadata metadata, Handler<WriteStream<Buffer>> handler) {
         requestFileUploadLink(handler);
     }
 

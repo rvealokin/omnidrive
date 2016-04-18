@@ -28,16 +28,11 @@ public class GoogleDestination implements Destination {
     }
 
     @Override
-    public void start(Handler<WriteStream<Buffer>> handler) {
-        final JsonObject json = new JsonObject();
-        json.put("name", "IgorTest");
-        json.put("type", "image/jpeg");
-        json.put("size", 1762478);
-
-        submitFileMultipart(json, handler);
+    public void start(FileMetadata metadata, Handler<WriteStream<Buffer>> handler) {
+        submitFileMultipart(metadata, handler);
     }
 
-    private void submitFileMultipart(JsonObject json, Handler<WriteStream<Buffer>> handler) {
+    private void submitFileMultipart(FileMetadata fileMetadata, Handler<WriteStream<Buffer>> handler) {
         System.out.println("Submitting file");
 
         try {
@@ -48,10 +43,8 @@ public class GoogleDestination implements Destination {
             final String multipartBoundary = UUID.randomUUID().toString();
 
             String metadataContentType = "Content-Type: application/json; charset=UTF-8\r\n\r\n";
-            String metadata = "{\"name\": \"" + path + "\"}\r\n";
-//            String metadata = "{\"name\": \"" + json.getString("name") + "\"}\r\n";
-            String fileContentType = "Content-Type: application/octet-stream\r\n\r\n";
-//            String fileContentType = "Content-Type: " + json.getString("type") + "\r\n\r\n";
+            String metadata = "{\"name\": \"" + fileMetadata.getName() + "\"}\r\n";
+            String fileContentType = "Content-Type: " + fileMetadata.getType() + "\r\n\r\n";
 
 //            int contentSize = json.getInteger("size")
 //                    + 3 * multipartBoundary.length() + 14
