@@ -102,6 +102,7 @@ public class DownloaderVertical extends AbstractVerticle {
 
             case "yandex": return new YandexSource(vertx, sourceName.substring(sourceName.indexOf("://") + 3).trim());
             case "google": return new GoogleSource(vertx, sourceName.substring(sourceName.indexOf("://") + 3).trim());
+            case "dropbox": return new DropboxSource(vertx, sourceName.substring(sourceName.indexOf("://") + 3).trim());
 
             default:
                 throw new IllegalArgumentException("Unknown source type: " + sourceType);
