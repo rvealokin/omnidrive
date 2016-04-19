@@ -27,23 +27,25 @@ public class DropboxDestination implements Destination {
 
     @Override
     public void start(FileMetadata metadata, Handler<WriteStream<Buffer>> handler) {
-        makeDropboxRequest("/2/files/upload", handler);
+        makeDropboxRequest("/2/files/upload", metadata, handler);
     }
 
-    private void makeDropboxRequest(String uri, Handler<WriteStream<Buffer>> handler) {
+    private void makeDropboxRequest(String uri, FileMetadata metadata, Handler<WriteStream<Buffer>> handler) {
         System.out.println("Uploading to path: " + path);
         HttpClientRequest request = vertx.createHttpClient(new HttpClientOptions().setSsl(true).setTrustAll(true))
                 .post(443, "content.dropboxapi.com", uri, res -> {
                     System.out.println("Dropbox status code: " + res.statusCode());
 
-                    System.out.println("Headers:");
-                    for (Map.Entry<String, String> header: res.headers().entries()) {
-                        System.out.println("    " + header.getKey() + ": " + header.getValue());
-                    }
+                    if (res.statusCode() != 200) {
+                        System.out.println("Headers:");
+                        for (Map.Entry<String, String> header : res.headers().entries()) {
+                            System.out.println("    " + header.getKey() + ": " + header.getValue());
+                        }
 
-                    res.bodyHandler(body -> {
-                        System.out.println(body);
-                    });
+                        res.bodyHandler(body -> {
+                            System.out.println(body);
+                        });
+                    }
                 })
                 .setChunked(true)
                 .putHeader("Authorization", "Bearer " + DROPBOX_KEY)
