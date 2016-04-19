@@ -8,6 +8,8 @@ import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.streams.WriteStream;
 
+import java.util.Map;
+
 import static ru.spb.kupchinolabs.omnidrive.Constants.DROPBOX_KEY;
 
 /**
@@ -34,6 +36,11 @@ public class DropboxDestination implements Destination {
                 .post(443, "content.dropboxapi.com", uri, res -> {
                     System.out.println("Dropbox status code: " + res.statusCode());
 
+                    System.out.println("Headers:");
+                    for (Map.Entry<String, String> header: res.headers().entries()) {
+                        System.out.println("    " + header.getKey() + ": " + header.getValue());
+                    }
+
                     res.bodyHandler(body -> {
                         System.out.println(body);
                     });
@@ -41,7 +48,7 @@ public class DropboxDestination implements Destination {
                 .setChunked(true)
                 .putHeader("Authorization", "Bearer " + DROPBOX_KEY)
                 .putHeader("Content-type", "application/octet-stream")
-                .putHeader("Dropbox-API-Tag", "{\"path\": \"" + path + "\"}");
+                .putHeader("Dropbox-API-Arg", "{\"path\": \"" + path + "\", \"mode\": \"overwrite\"}");
 
         handler.handle(request);
     }
