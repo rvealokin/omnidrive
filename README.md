@@ -27,3 +27,26 @@ Copy a file from Yandex.Disk to local directory:
 curl -X POST --data '{"from": "yandex:///igor-test-yandex.jpg", "to": "file:///Users/inikolaev"}' http://localhost:9090/newcopy
 ```
 
+Copy a file from Dropbox to local file:
+```
+curl -X POST --data '{"from": "dropbox:///test-dropbox-local.jpg", "to": "file:///Users/inikolaev/igor-test-dropbox.jpg"}' http://localhost:9090/newcopy
+```
+
+Copy a file from Dropbox to Yandex.Disk:
+```
+curl -X POST --data '{"from": "dropbox:///test-dropbox-local.jpg", "to": "yandex:///igor-test-dropbox.jpg"}' http://localhost:9090/newcopy
+```
+
+Copy a file from Dropbox to Google Drive:
+```
+curl -X POST --data '{"from": "dropbox:///test-dropbox-local.jpg", "to": "google://igor-test-dropbox.jpg"}' http://localhost:9090/newcopy
+```
+
+Copy from Google Drive to Dropbox:
+```
+curl -X POST --data '{"from": "google://0BwxVfUACl1RvT2wtQmpLSVdrX1E", "to": "dropbox:///test-dropbox-google.jpg"}' http://localhost:9090/newcopy
+```
+Copy from Yandex.Disk to Dropbox:
+```
+curl -X POST --data '{"from": "yandex:///igor-test-dropbox.jpg", "to": "dropbox:///test-dropbox-yandex.jpg"}' http://localhost:9090/newcopy
+```
